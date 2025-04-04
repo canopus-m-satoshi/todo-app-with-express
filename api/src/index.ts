@@ -61,6 +61,27 @@ app.put('/editTodo/:id', async (req: Request, res: Response) => {
   }
 })
 
+app.delete('/deleteTodo/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+
+    const deleteTodo = await prisma.todo.delete({
+      where: {
+        id: parseInt(id),
+      },
+    })
+
+    return res.json(deleteTodo)
+  } catch (e) {
+    console.log(e)
+
+    return res.status(500).json({
+      message: 'Error deleting todo',
+      error: e,
+    })
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
 })
