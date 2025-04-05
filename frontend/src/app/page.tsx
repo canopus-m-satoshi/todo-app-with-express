@@ -1,6 +1,20 @@
+'use client'
+
+import useSWR from 'swr'
 import Todo from './components/Todo'
 
+async function fetcher(key: string) {
+  return await fetch(key).then((res) => res.json())
+}
+
 export default function Home() {
+  const { data, error, isLoading } = useSWR(
+    'http://localhost:8080/allTodos',
+    fetcher,
+  )
+
+  console.log(data)
+
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-32 py-4 px-4">
       <div className="px-4 py-2">
