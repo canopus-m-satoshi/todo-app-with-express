@@ -2,18 +2,21 @@
 
 import useSWR from 'swr'
 import Todo from './components/Todo'
+import { TodoType } from './types'
 
-async function fetcher(key: string) {
+async function fetcher(key: string): Promise<TodoType[]> {
   return await fetch(key).then((res) => res.json())
 }
 
 export default function Home() {
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading } = useSWR<TodoType[]>(
     'http://localhost:8080/allTodos',
     fetcher,
   )
 
-  console.log(data)
+  if (isLoading) return <div>Loading...</div>
+
+  if (error) return <div>データを取得できませんでした</div>
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-32 py-4 px-4">
@@ -38,9 +41,19 @@ export default function Home() {
           </button>
         </div>
       </form>
-      <ul className="divide-y divide-gray-200 px-4">
-        <Todo />
-      </ul>
+      {data ? (
+        <ul className="divide-y divide-gray-200 px-4">
+          {data.map((todo) => (
+            <Todo
+              key={todo.id}
+              title={todo.title}
+              isCompleted={todo.isCompleted}
+            />
+          ))}
+        </ul>
+      ) : (
+        <div>No data</div>
+      )}
     </div>
   )
 }
