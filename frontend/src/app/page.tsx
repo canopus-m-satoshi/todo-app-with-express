@@ -82,8 +82,10 @@ export default function Home() {
           {data.map((todo) => (
             <Todo
               key={todo.id}
+              id={todo.id}
               title={todo.title}
               isCompleted={todo.isCompleted}
+              mutateTodos={mutateTodos}
             />
           ))}
         </ul>

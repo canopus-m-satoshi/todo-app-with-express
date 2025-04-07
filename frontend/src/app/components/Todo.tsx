@@ -1,9 +1,28 @@
+import { TodoType } from '../types'
+
 type Props = {
+  id: number
   title: string
   isCompleted: boolean
+  mutateTodos: () => void
 }
 
-const Todo = ({ title, isCompleted }: Props) => {
+const endpoint = 'http://localhost:8080/deleteTodo'
+
+const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
+  const deleteTodo = async (id: number) => {
+    const response = await fetch(`${endpoint}/${id}`, {
+      method: 'DELETE',
+    })
+
+    return response.json()
+  }
+
+  const handleDelete = async (id: number) => {
+    await deleteTodo(id)
+    mutateTodos()
+  }
+
   return (
     <div>
       <li className="py-4">
@@ -24,7 +43,9 @@ const Todo = ({ title, isCompleted }: Props) => {
             <button className="duration-150 bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-2 rounded">
               ✒
             </button>
-            <button className="bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-2 rounded">
+            <button
+              className="bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-2 rounded"
+              onClick={() => handleDelete(id)}>
               ✖
             </button>
           </div>
