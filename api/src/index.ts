@@ -10,10 +10,10 @@ const PORT = 8080
 
 const prisma = new PrismaClient()
 
-app.get('/allTodos', async (req: Request, res: Response) => {
-  const allTodos = await prisma.todo.findMany()
+app.get('/getAllTodos', async (req: Request, res: Response) => {
+  const getAllTodos = await prisma.todo.findMany()
 
-  return res.json(allTodos)
+  return res.json(getAllTodos)
 })
 
 app.post('/createTodo', async (req: Request, res: Response) => {
