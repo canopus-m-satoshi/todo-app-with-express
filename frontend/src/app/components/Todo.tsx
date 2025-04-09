@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { TodoType } from '../types'
+import { EDIT_ENDPOINT, DELETE_ENDPOINT } from '../constants'
 
 type Props = {
   id: number
@@ -8,15 +9,12 @@ type Props = {
   mutateTodos: () => void
 }
 
-const deleteEndpoint = 'http://localhost:8080/deleteTodo'
-const editEndpoint = 'http://localhost:8080/editTodo'
-
 const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editedTitle, setEditedTitle] = useState(title)
 
   const deleteTodo = async (id: number) => {
-    const response = await fetch(`${deleteEndpoint}/${id}`, {
+    const response = await fetch(`${DELETE_ENDPOINT}/${id}`, {
       method: 'DELETE',
     })
 
@@ -24,7 +22,7 @@ const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
   }
 
   const editTodo = async (id: number, title: string) => {
-    const response = await fetch(`${editEndpoint}/${id}`, {
+    const response = await fetch(`${EDIT_ENDPOINT}/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
