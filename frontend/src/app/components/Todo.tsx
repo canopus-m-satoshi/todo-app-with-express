@@ -23,7 +23,26 @@ const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
     return response.json()
   }
 
-  const handleEdit = () => {
+  const editTodo = async (id: number, title: string) => {
+    const response = await fetch(`${editEndpoint}/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title }),
+    })
+
+    console.log(response)
+
+    return response.json()
+  }
+
+  const handleEdit = async (id: number) => {
+    if (isEditing) {
+      await editTodo(id, editedTitle)
+      mutateTodos()
+    }
+
     setIsEditing(!isEditing)
   }
 
@@ -60,7 +79,7 @@ const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
           <div className="flex items-center space-x-2">
             <button
               className="duration-150 bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-2 rounded cursor-pointer"
-              onClick={handleEdit}>
+              onClick={() => handleEdit(id)}>
               {isEditing ? 'Save' : 'Edit'}
             </button>
             <button
