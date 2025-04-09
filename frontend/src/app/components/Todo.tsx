@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { EDIT_ENDPOINT, DELETE_ENDPOINT } from '../constants'
+import { deleteTodoApi, editTodoApi, toggleCompleteTodoApi } from '../utils/api'
 
 type Props = {
   id: number
@@ -13,30 +13,12 @@ const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
   const [editedTitle, setEditedTitle] = useState(title)
 
   const deleteTodo = async (id: number) => {
-    const response = await fetch(`${DELETE_ENDPOINT}/${id}`, {
-      method: 'DELETE',
-    })
-
-    return response.json()
-  }
-
-  const editTodo = async (id: number, title: string) => {
-    const response = await fetch(`${EDIT_ENDPOINT}/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ title }),
-    })
-
-    console.log(response)
-
-    return response.json()
+    return await deleteTodoApi(id)
   }
 
   const handleEdit = async (id: number) => {
     if (isEditing) {
-      await editTodo(id, editedTitle)
+      await editTodoApi(id, { title: editedTitle })
       mutateTodos()
     }
 
@@ -45,6 +27,11 @@ const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
 
   const handleDelete = async (id: number) => {
     await deleteTodo(id)
+    mutateTodos()
+  }
+
+  const handleToggleComplete = async (id: number) => {
+    await toggleCompleteTodoApi(id, !isCompleted)
     mutateTodos()
   }
 
@@ -57,8 +44,10 @@ const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
               id="todo1"
               name="todo1"
               type="checkbox"
-              className="h-4 w-4 text-teal-600 focus:ring-teal-500
-                border-gray-300 rounded"
+              className={`h-4 w-4 text-teal-600 focus:ring-teal-500
+                border-gray-300 rounded ${isCompleted ? 'line-through' : ''}`}
+              checked={isCompleted}
+              onChange={() => handleToggleComplete(id)}
             />
             <label className="ml-3 block text-gray-900">
               {isEditing ? (
@@ -69,7 +58,12 @@ const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
                   className="border rounded py-1 px-2"
                 />
               ) : (
-                <span className="text-lg font-medium mr-2">{title}</span>
+                <span
+                  className={`text-lg font-medium mr-2 ${
+                    isCompleted ? 'line-through' : ''
+                  }`}>
+                  {title}
+                </span>
               )}
             </label>
           </div>

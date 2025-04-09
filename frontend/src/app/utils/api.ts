@@ -23,21 +23,27 @@ const fetchApi = async (endpoint: string, options: RequestOptions) => {
   return response.json()
 }
 
-export const getTodos = () => fetchApi(GET_ENDPOINT, { method: 'GET' })
+export const getTodosApi = () => fetchApi(GET_ENDPOINT, { method: 'GET' })
 
-export const createTodo = (data: { title: string }) =>
+export const createTodoApi = (data: { title: string }) =>
   fetchApi(POST_ENDPOINT, {
     method: 'POST',
     body: JSON.stringify(data),
   })
 
-export const editTodo = (id: number, data: { title: string }) =>
+export const editTodoApi = (id: number, data: { title: string }) =>
   fetchApi(`${EDIT_ENDPOINT}/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),
   })
 
-export const deleteTodo = (id: number) =>
+export const toggleCompleteTodoApi = (id: number, isCompleted: boolean) =>
+  fetchApi(`${EDIT_ENDPOINT}/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ isCompleted }),
+  })
+
+export const deleteTodoApi = (id: number) =>
   fetchApi(`${DELETE_ENDPOINT}/${id}`, {
     method: 'DELETE',
   })

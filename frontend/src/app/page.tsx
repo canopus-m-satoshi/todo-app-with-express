@@ -4,7 +4,8 @@ import useSWR from 'swr'
 import Todo from './components/Todo'
 import { TodoType } from './types'
 import { useRef } from 'react'
-import { POST_ENDPOINT, GET_ENDPOINT } from './constants'
+import { GET_ENDPOINT } from './constants'
+import { createTodoApi } from './utils/api'
 
 async function fetcher(key: string): Promise<TodoType[]> {
   return await fetch(key).then((res) => res.json())
@@ -19,27 +20,14 @@ export default function Home() {
   } = useSWR<TodoType[]>(GET_ENDPOINT, fetcher)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const createTodo = async (data: Omit<TodoType, 'id'>) => {
-    const response = await fetch(POST_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-
-    return response.json()
-  }
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const inputValue = inputRef.current?.value
 
     if (!inputValue) return
 
-    const newTodo = await createTodo({
+    const newTodo = await createTodoApi({
       title: inputValue,
-      isCompleted: false,
     })
 
     mutateTodos([...(data || []), newTodo])
