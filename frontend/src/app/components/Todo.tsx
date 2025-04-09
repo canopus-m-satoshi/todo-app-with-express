@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { TodoType } from '../types'
 
 type Props = {
@@ -7,15 +8,23 @@ type Props = {
   mutateTodos: () => void
 }
 
-const endpoint = 'http://localhost:8080/deleteTodo'
+const deleteEndpoint = 'http://localhost:8080/deleteTodo'
+const editEndpoint = 'http://localhost:8080/editTodo'
 
 const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedTitle, setEditedTitle] = useState(title)
+
   const deleteTodo = async (id: number) => {
-    const response = await fetch(`${endpoint}/${id}`, {
+    const response = await fetch(`${deleteEndpoint}/${id}`, {
       method: 'DELETE',
     })
 
     return response.json()
+  }
+
+  const handleEdit = () => {
+    setIsEditing(!isEditing)
   }
 
   const handleDelete = async (id: number) => {
@@ -36,12 +45,23 @@ const Todo = ({ id, title, isCompleted, mutateTodos }: Props) => {
                 border-gray-300 rounded"
             />
             <label className="ml-3 block text-gray-900">
-              <span className="text-lg font-medium mr-2">{title}</span>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  className="border rounded py-1 px-2"
+                />
+              ) : (
+                <span className="text-lg font-medium mr-2">{title}</span>
+              )}
             </label>
           </div>
           <div className="flex items-center space-x-2">
-            <button className="duration-150 bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-2 rounded">
-              ✒
+            <button
+              className="duration-150 bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-2 rounded cursor-pointer"
+              onClick={handleEdit}>
+              {isEditing ? 'Save' : 'Edit'}
             </button>
             <button
               className="bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-2 rounded"
