@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { TodoType } from '../types'
 import { EDIT_ENDPOINT, DELETE_ENDPOINT } from '../constants'
 
 type Props = {
